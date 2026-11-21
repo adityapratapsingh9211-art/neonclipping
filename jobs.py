@@ -93,7 +93,14 @@ class JobQueue:
 
     def run(self):
         while not self.stopped.is_set():
-            if not self.run_once():self.wake.wait(.5);self.wake.clear()
+            try:
+                if not self.run_once():self.wake.wait(.5);self.wake.clear()
+            except sqlite3.OperationalError:
+                if self.stopped.is_set():break
+                time.sleep(.2)
+            except Exception:
+                if self.stopped.is_set():break
+                time.sleep(.5)
 
     def close(self):
         self.stopped.set();self.wake.set()

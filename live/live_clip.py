@@ -84,7 +84,7 @@ def cut_clip(src, start, dur, out):
     style = "Fontname=Arial Black,Fontsize=16,PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,BorderStyle=1,Outline=3,Shadow=0,Alignment=2,MarginV=110"
     vf = ("[0:v]scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,boxblur=20:2[bg];"
           "[0:v]scale=1080:-2[fg];[bg][fg]overlay=0:(H-h)/2" + (f",subtitles={sub}:force_style='{style}'" if n else "")
-          + (f",drawtext=text='Credit\: {CREDIT}':fontfile='C\:/Windows/Fonts/arialbd.ttf':fontcolor=white:fontsize=40:box=1:boxcolor=black@0.6:boxborderw=14:x=60:y=270" if CREDIT else ""))
+          + (f",drawtext=text='Credit\\: {CREDIT}':fontfile='C\\:/Windows/Fonts/arialbd.ttf':fontcolor=white:fontsize=40:box=1:boxcolor=black@0.6:boxborderw=14:x=60:y=270" if CREDIT else ""))
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", raw.name, "-filter_complex", vf,
                     *VENC, "-c:a", "copy", "-movflags", "+faststart", out.name], check=True, cwd=out.parent)
     for p in (raw, wav):
