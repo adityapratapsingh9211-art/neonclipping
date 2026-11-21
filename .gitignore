@@ -11,9 +11,12 @@
 !app.js
 !style.css
 !docs/
+!docs/*.html
 !docs/*.jpg
 !docs/*.pdf
 !docs/*.gif
+!docs/assets/
+!docs/assets/*
 !docs/guide/
 !docs/guide/*
 highlights_v1.py
