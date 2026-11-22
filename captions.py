@@ -103,13 +103,14 @@ def transcribe(source,start,end,data,report=lambda message:None,language=None,mo
             report('Transcribing selected clip locally')
             # 'hinglish' = Hindi speech written in Roman letters (a Roman-script prompt steers Whisper to it)
             prompt=DEVA_PROMPT if language in ('hi','hinglish') else None
-            segments,info=MODEL.transcribe(str(audio),beam_size=5,language=('hi' if language=='hinglish' else language) or None,initial_prompt=prompt,word_timestamps=True,vad_filter=True,condition_on_previous_text=False)
+            bs=1 if getattr(MODEL,'device','cpu')=='cpu' else 5
+            segments,info=MODEL.transcribe(str(audio),beam_size=bs,language=('hi' if language=='hinglish' else language) or None,initial_prompt=prompt,word_timestamps=True,vad_filter=False,condition_on_previous_text=False)
             words=[]
             for segment in segments:
                 for w in segment.words or []:
                     text=w.word.strip()
                     if language=='hinglish':text=ascii_fold(to_hinglish(text)).strip()
-                    if text and w.end>w.start:words.append({'start':round(max(0,w.start),3),'end':round(min(end-start,w.end),3),'text':text})
+                    if text and w.end>w.start:words.append({'start':round(max(0.0,float(w.start)),3),'end':round(min(float(end-start),float(w.end)),3),'text':text})
             words=collapse_repeats(words)
             result={'words':words,'language':info.language,'duration':end-start,'model':model_tag}
             cached.write_text(json.dumps(result,ensure_ascii=False),encoding='utf-8');return result
